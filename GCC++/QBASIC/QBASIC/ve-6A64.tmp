@@ -1,0 +1,322 @@
+﻿Public Class Form1
+
+Public Sub Save()
+If TextBox1.Tag = "" then
+SaveFileDialog1.ShowDialog
+textbox1.Tag = SaveFileDialog1.FileName
+End If
+Dim FILE_NAME As String = textbox1.Tag
+If FILE_NAME <> "" then
+Dim objWriter As New System.IO.StreamWriter( FILE_NAME )
+objWriter.Write( TextBox1.Text )
+objWriter.Close()
+Status.Text = "Saved"
+end if
+Return
+End Sub
+
+Public Sub Compile()
+Call Save()
+If TextBox1.Tag <> "" then
+Status.Text = "Compiling"
+Dim k As String
+If My.Computer.FileSystem.FileExists("a.exe")  then
+My.Computer.FileSystem.DeleteFile("a.exe") 
+end if
+k = chr(34) + TextBox1.tag + chr(34)
+Process.Start(".\MinGW64\bin\gcc.exe ", k)
+Threading.Thread.Sleep(1000) 
+Status.Text = "Compiled" 
+If My.Computer.FileSystem.FileExists("a.exe") then
+Status.Text = "Running" 
+Process.Start("a.exe")
+Else
+MessageBox.Show("There are Some errors.")
+end if
+Else
+status.text = "Compilation Error"
+End If
+Return
+End Sub
+
+Public Sub LoadSettings()
+If My.Computer.FileSystem.FileExists("Settings.bak")  then
+Dim Files As New System.IO.StreamReader("Settings.bak")
+TextBox1.Dock = Files.ReadLine()
+Panel1.Dock = Files.ReadLine()
+TextBox1.Height = Me.Height - Files.ReadLine()
+TextBox1.Width = Me.width - Files.ReadLine()
+Textbox1.left = Files.ReadLine()
+TextBox1.ScrollBars = Files.ReadLine()
+Textbox1.BackColor = System.Drawing.ColorTranslator.FromHtml(Files.ReadLine())
+TextBox1.ForeColor = System.Drawing.ColorTranslator.FromHtml(Files.ReadLine())
+StatusStrip1.Visible = Files.ReadLine()
+Button7.Tag = Files.ReadLine()
+Button1.Tag = Files.ReadLine()
+Files.Close
+Status.Text = "Settings Loaded"
+Else
+Status.Text = "Settings backup not found"
+end if
+Return
+End Sub
+
+Public Sub Open()
+Dim k As system.Windows.Forms.DialogResult
+k = OpenFileDialog1.ShowDialog   
+if k <> Windows.Forms.DialogResult.Cancel then
+Dim FileReader As String
+FileReader = My.Computer.FileSystem.ReadAllText(OpenFileDialog1.FileName)
+TextBox1.Text = FileReader
+TextBox1.Tag = OpenFileDialog1.FileName
+Status.Text = "Opened"
+End if
+Return
+End Sub
+
+Public Sub SaveSettings()
+Dim Files As New System.IO.StreamWriter( "Settings.bak" )
+Files.WriteLine(TextBox1.Dock)
+Files.WriteLine(Panel1.Dock)
+Files.WriteLine(Me.Height - TextBox1.Height)
+Files.WriteLine(Me.width - TextBox1.Width)
+Files.WriteLine(Textbox1.left)
+Files.WriteLine(TextBox1.ScrollBars)
+Files.WriteLine(System.Drawing.ColorTranslator.ToHtml(Textbox1.BackColor))
+Files.WriteLine(System.Drawing.ColorTranslator.ToHtml(Textbox1.ForeColor))
+Files.WriteLine(StatusStrip1.Visible)
+Files.WriteLine(Button7.Tag)
+Files.WriteLine(Button1.Tag)
+Files.Close()
+Status.Text = "Settings Saved"
+End sub
+
+Public Sub DeleteSettings()
+If My.Computer.FileSystem.FileExists("Settings.bak")  then
+My.Computer.FileSystem.DeleteFile("Settings.bak") 
+Status.Text = "Settings Removed"
+End if
+Return
+End Sub
+
+Public Sub SetSearch()
+Dim a As String
+Dim b As string
+a = InputBox("Enter string to Find [Case Sensitive]: ")
+b = InputBox("Enter string to Replace with [Case Sensitive]: ")
+Button6.Tag = a
+Button5.Tag = b
+Status.Text = "Press Replace to replace the selected word"
+Return
+End Sub
+
+Public Sub Replace()
+If button5.tag <> "" and Button6.Tag <> "" then
+TextBox1.text = TextBox1.Text.Replace(Button6.tag,button5.tag)
+Status.Text = "Replaced"
+End If
+Return
+End Sub
+
+Public Sub SetFocus()
+TextBox1.Focus()
+TextBox1.SelectionStart = TextBox1.Text.Length
+TextBox1.SelectionLength = 0
+Return
+End Sub
+
+Public Sub Clean()
+Dim m() As String
+m = Split(TextBox1.Tag,".")
+m(0) = m(0) + ".exe"
+If My.Computer.FileSystem.FileExists(m(0))  then
+My.Computer.FileSystem.DeleteFile(m(0)) 
+end if
+Status.Text = "Removed EXE File"
+Return
+End Sub
+
+Public Sub InsertLine()
+TextBox1.Text =  TextBox1.Text + Button7.Tag + vbnewline  +vbnewline  
+TextBox1.Focus()
+TextBox1.SelectionStart = TextBox1.Text.Length
+TextBox1.SelectionLength = 0
+Return
+End Sub
+
+Private Sub Form1_Resize(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Resize
+If Me.height < = 677 then
+Me.height = 677
+End If
+If Me.Width < = 800 then
+Me.Width = 800
+End If     
+Panel1.Height = Me.Height - 125
+TextBox1.Height =  Me.Height - 124
+If TextBox1.Left = 8 then
+TextBox1.Width = Me.Width - 25
+Else
+TextBox1.Width = Me.Width - 17
+End If
+End Sub
+
+Private Sub ToolStripMenuItem10_Click( ByVal sender As System.Object,  ByVal e As System.EventArgs) Handles ToolStripMenuItem10.Click
+TextBox1.ScrollBars = ScrollBars.None
+End Sub
+
+Private Sub HorizontalToolStripMenuItem_Click( ByVal sender As System.Object,  ByVal e As System.EventArgs) Handles HorizontalToolStripMenuItem.Click
+TextBox1.ScrollBars = ScrollBars.Horizontal
+End Sub
+
+Private Sub VerticalToolStripMenuItem_Click( ByVal sender As System.Object,  ByVal e As System.EventArgs) Handles VerticalToolStripMenuItem.Click
+TextBox1.ScrollBars = ScrollBars.Vertical
+End Sub
+
+Private Sub NoneToolStripMenuItem_Click( ByVal sender As System.Object,  ByVal e As System.EventArgs) Handles NoneToolStripMenuItem.Click
+TextBox1.ScrollBars = ScrollBars.Both
+End Sub
+
+Private Sub PresentToolStripMenuItem_Click( ByVal sender As System.Object,  ByVal e As System.EventArgs) Handles PresentToolStripMenuItem.Click
+TextBox1.WordWrap = true
+End Sub
+
+Private Sub NoneToolStripMenuItem1_Click( ByVal sender As System.Object,  ByVal e As System.EventArgs) Handles NoneToolStripMenuItem1.Click
+TextBox1.WordWrap = false
+End Sub
+
+Private Sub Button8_Click( ByVal sender As System.Object,  ByVal e As System.EventArgs) Handles Button8.Click
+End
+End Sub
+
+Private Sub FontToolStripMenuItem_Click( ByVal sender As System.Object,  ByVal e As System.EventArgs) Handles FontToolStripMenuItem.Click
+IF FontDialog1.ShowDialog <> Windows.Forms.DialogResult.Cancel then
+TextBox1.Font = FontDialog1.Font
+End If
+End Sub
+
+Private Sub Button3_Click( ByVal sender As System.Object,  ByVal e As System.EventArgs) Handles Button3.Click
+TextBox1.Text = ""
+Status.Text = "Cleared"
+End Sub
+
+Private Sub ExitToolStripMenuItem_Click( ByVal sender As System.Object,  ByVal e As System.EventArgs) Handles ExitToolStripMenuItem.Click
+End
+End Sub
+
+Private Sub ClearAllToolStripMenuItem_Click( ByVal sender As System.Object,  ByVal e As System.EventArgs) Handles ClearAllToolStripMenuItem.Click
+TextBox1.Text = ""
+End Sub
+
+Private Sub Button2_Click( ByVal sender As System.Object,  ByVal e As System.EventArgs) Handles Button2.Click
+Call Save()
+End Sub
+
+Private Sub ToolStripMenuItem5_Click( ByVal sender As System.Object,  ByVal e As System.EventArgs) Handles ToolStripMenuItem5.Click
+TextBox1.Undo
+End Sub
+
+Private Sub SearchToolStripMenuItem_Click( ByVal sender As System.Object,  ByVal e As System.EventArgs) Handles SearchToolStripMenuItem.Click
+TextBox1.Copy
+End Sub
+
+Private Sub PasteToolStripMenuItem_Click( ByVal sender As System.Object,  ByVal e As System.EventArgs) Handles PasteToolStripMenuItem.Click
+TextBox1.Paste
+End Sub
+
+Private Sub CustoToolStripMenuItem_Click( ByVal sender As System.Object,  ByVal e As System.EventArgs) Handles CustoToolStripMenuItem.Click
+Dim k As String
+k = InputBox("Enter Line character: ")
+Button7.Tag = k
+End Sub
+
+Private Sub ToolStripMenuItem14_Click( ByVal sender As System.Object,  ByVal e As System.EventArgs) Handles ToolStripMenuItem14.Click
+Button7.Tag = "/*-------------------------------------------------------------------------------------------*/"
+End Sub
+
+Private Sub ToolStripMenuItem15_Click( ByVal sender As System.Object,  ByVal e As System.EventArgs) Handles ToolStripMenuItem15.Click
+Button7.Tag = "//---------------------------------------------------------------------------------------------"
+End Sub
+
+Private Sub ToolStripMenuItem16_Click( ByVal sender As System.Object,  ByVal e As System.EventArgs) Handles ToolStripMenuItem16.Click
+Button7.Tag = "'----------------------------------------------------------------------------------------------"
+End Sub
+
+Private Sub HideToolStripMenuItem_Click( ByVal sender As System.Object,  ByVal e As System.EventArgs) Handles HideToolStripMenuItem.Click
+TextBox1.Left = 0
+TextBox1.Width = Me.Width - 17
+End Sub
+
+Private Sub ShowToolStripMenuItem_Click( ByVal sender As System.Object,  ByVal e As System.EventArgs) Handles ShowToolStripMenuItem.Click
+TextBox1.Left = 8
+TextBox1.Width = Me.Width - 25
+End Sub
+
+Private Sub TextColorToolStripMenuItem_Click( ByVal sender As System.Object,  ByVal e As System.EventArgs) Handles TextColorToolStripMenuItem.Click
+If ColorDialog1.ShowDialog <> Windows.Forms.DialogResult.Cancel
+TextBox1.ForeColor = ColorDialog1.Color
+End if
+End Sub
+
+Private Sub BAToolStripMenuItem_Click( ByVal sender As System.Object,  ByVal e As System.EventArgs) Handles BAToolStripMenuItem.Click
+If ColorDialog1.ShowDialog <> Windows.Forms.DialogResult.Cancel
+TextBox1.BackColor = ColorDialog1.Color
+End if
+End Sub
+
+Private Sub ToolStripMenuItem20_Click( ByVal sender As System.Object,  ByVal e As System.EventArgs) Handles ToolStripMenuItem20.Click
+Button7.Tag = "//_____________________________________________________________________________________________"
+End Sub
+
+Private Sub TrueToolStripMenuItem_Click( ByVal sender As System.Object,  ByVal e As System.EventArgs) Handles TrueToolStripMenuItem.Click
+TextBox1.Dock = dockstyle.None
+Panel1.Dock = dockstyle.none
+SideBarToolStripMenuItem.Enabled = True
+ShowToolStripMenuItem.Enabled = True
+HideToolStripMenuItem.Enabled = True
+End Sub
+
+Private Sub CenterToolStripMenuItem_Click( ByVal sender As System.Object,  ByVal e As System.EventArgs) Handles CenterToolStripMenuItem.Click
+If TextBox1.Left = 8 then
+TextBox1.Dock = DockStyle.Right
+Panel1.Dock = dockstyle.Left
+Else
+TextBox1.Dock = DockStyle.Fill
+end if
+SideBarToolStripMenuItem.Enabled = False
+ShowToolStripMenuItem.Enabled = False
+HideToolStripMenuItem.Enabled = False
+End Sub
+
+Private Sub ShowToolStripMenuItem1_Click( ByVal sender As System.Object,  ByVal e As System.EventArgs) Handles ShowToolStripMenuItem1.Click
+StatusStrip1.Visible = True
+End Sub
+
+Private Sub HideToolStripMenuItem1_Click( ByVal sender As System.Object,  ByVal e As System.EventArgs) Handles HideToolStripMenuItem1.Click
+StatusStrip1.Visible = false
+End Sub
+
+Private Sub TextBox1_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles TextBox1.Click
+Status.Text = "Ready"
+End Sub
+
+Private Sub Form1_Load( ByVal sender As System.Object,  ByVal e As System.EventArgs) Handles MyBase.Load
+Call LoadSettings()
+End Sub
+
+Private Sub OnToolStripMenuItem_Click( ByVal sender As System.Object,  ByVal e As System.EventArgs) Handles OnToolStripMenuItem.Click
+Button1.Tag = 1
+End Sub
+
+Private Sub OffToolStripMenuItem_Click( ByVal sender As System.Object,  ByVal e As System.EventArgs) Handles OffToolStripMenuItem.Click
+Button1.Tag = 0
+End Sub
+
+Private Sub TextBox1_KeyUp(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles TextBox1.KeyUp
+If button1.Tag = 1 then
+If e.KeyCode = 221
+TextBox1.Text =  TextBox1.Text + vbnewline+  Button7.Tag +vbnewline  
+Call Setfocus()
+End If
+End if
+End Sub
+End Class
