@@ -1,0 +1,34 @@
+char
+case
+do
+double
+include
+else
+enum
+exit
+extern
+float
+for
+getch
+getche
+goto
+if
+int
+long
+printf
+return
+scanf
+short
+sizeof
+struct
+switch
+union
+void
+while
+malloc
+-----
+
+TO ADD AUTO-HIGHLIGHT KEYWORD PASTE YOUR KEYWORD BEFORE "-----" LINE
+(PLEASE ADD ONLY ONE KEYWORD IN EACH LINE & DO NOT USE ANY SPECIAL CHARACTER)
+TO REMOVE ANY AUTO-HIGHLIGHT KEYWORD REMOVE THE KEYWORD BEFORE "-----" LINE
+WARNING: DO NOT REMOVE "-----" LINE
