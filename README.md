@@ -6,3 +6,5 @@ What sets this IDE apart is its arsenal of features designed to empower develope
 One of the standout capabilities of this IDE is its lightning-fast performance, simplicity, and lightweight nature, which collectively offer a user experience reminiscent of top-tier IDEs. Additionally, developers can leverage its functionality to build stand-alone desktop applications effortlessly.
 
 This IDE isn't just a tool; it's a game-changer for C and C++ developers, providing them with a robust and versatile platform to bring their coding projects to life. Continuously refining and enhancing based on user feedback, it's poised to become an indispensable asset in any developer's toolkit.
+
+Made with VB.NET
